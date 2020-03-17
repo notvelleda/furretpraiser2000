@@ -46,6 +46,7 @@ public class Main extends JFrame implements ActionListener {
 
     private int numPraising = 0;
     private int numPraises = 0;
+    private String userId = "";
     
     public Main() {
         System.out.println("it's furret praising time!");
@@ -153,6 +154,8 @@ public class Main extends JFrame implements ActionListener {
         DiscordRichPresence presence = new DiscordRichPresence();
 
         handlers.ready = (user) -> {
+            this.userId = user.userId;
+
             //System.out.println("Got user " + user.username + "#" + user.discriminator);
             msg.setText("Contacting server...");
             msgShadow.setText("Contacting server...");
@@ -187,7 +190,7 @@ public class Main extends JFrame implements ActionListener {
         presence.largeImageText = "yay furret";
         presence.partyId = "furretParty";
         presence.partySize = 1;
-        presence.partyMax = 381;
+        presence.partyMax = 162;
         /*presence.spectateSecret = "furretSpectate";
         presence.joinSecret = "furretJoin";*/
         lib.Discord_UpdatePresence(presence);
@@ -212,7 +215,7 @@ public class Main extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent event) {
         if (event.getActionCommand() == "Praise Furret") {
             try {
-                getURL("http://furret-praiser-2000.glitch.me/praise");
+                getURL("http://furret-praiser-2000.glitch.me/praise?id=" + this.userId);
                 numPraises ++;
                 msg2.setText("Furret has been praised " + numPraises + " times today.");
                 msg2Shadow.setText("Furret has been praised " + numPraises + " times today.");
@@ -228,9 +231,13 @@ public class Main extends JFrame implements ActionListener {
 
     private void updatePraises() {
         System.out.println("Updating praises...");
+        String _praising = "";
+        String _praises = "";
         try {
-            numPraising = Integer.parseInt(getURL("http://furret-praiser-2000.glitch.me/praisers"));
-            numPraises = Integer.parseInt(getURL("http://furret-praiser-2000.glitch.me/praises"));
+            _praising = getURL("http://furret-praiser-2000.glitch.me/praisers?id=" + this.userId);
+            _praises = getURL("http://furret-praiser-2000.glitch.me/praises?id=" + this.userId);
+            numPraising = Integer.parseInt(_praising);
+            numPraises = Integer.parseInt(_praises);
             
             if (numPraising == 1) {
                 msg.setText(numPraising + " person is praising Furret.");
@@ -242,6 +249,15 @@ public class Main extends JFrame implements ActionListener {
 
             msg2.setText("Furret has been praised " + numPraises + " times today.");
             msg2Shadow.setText("Furret has been praised " + numPraises + " times today.");
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            if (_praising.equals(_praises)) {
+                _praises = "";
+            }
+            msg.setText(_praising);
+            msgShadow.setText(_praising);
+            msg2.setText(_praises);
+            msg2Shadow.setText(_praises);
         } catch (Exception e) {
             e.printStackTrace();
             msg.setText("Error connecting to server");

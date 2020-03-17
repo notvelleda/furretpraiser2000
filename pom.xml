@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>xyz.pugduddly</groupId>
 	<artifactId>furretpraiser2000</artifactId>
-	<version>1.0.0</version>
+	<version>1.1.0</version>
 	<name>Furret Praiser 2000</name>
 	<description>Praise the almighty furret!</description>
 	<properties>
