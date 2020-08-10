@@ -161,7 +161,8 @@ public class Main extends JFrame implements ActionListener {
             msgShadow.setText("Contacting server...");
 
             try {
-                getURL("http://furret-praiser-2000.glitch.me/startpraising?id=" + user.userId);
+                //getURL("http://furret-praiser-2000.glitch.me/startpraising?id=" + user.userId);
+                getURL("http://pugduddly.home.kg:3000/startpraising?id=" + user.userId);
             } catch (Exception e) {
                 e.printStackTrace();
                 msg.setText("Error connecting to server");
@@ -171,7 +172,8 @@ public class Main extends JFrame implements ActionListener {
             Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
                 public void run() {
                     try {
-                        getURL("http://furret-praiser-2000.glitch.me/stoppraising?id=" + user.userId);
+                        //getURL("http://furret-praiser-2000.glitch.me/stoppraising?id=" + user.userId);
+                        getURL("http://pugduddly.home.kg:3000/stoppraising?id=" + user.userId);
                     } catch (Exception e) { 
                         e.printStackTrace();
                     }
@@ -215,7 +217,8 @@ public class Main extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent event) {
         if (event.getActionCommand() == "Praise Furret") {
             try {
-                getURL("http://furret-praiser-2000.glitch.me/praise?id=" + this.userId);
+                //getURL("http://furret-praiser-2000.glitch.me/praise?id=" + this.userId);
+                getURL("http://pugduddly.home.kg:3000/praise?id=" + this.userId);
                 numPraises ++;
                 msg2.setText("Furret has been praised " + numPraises + " times today.");
                 msg2Shadow.setText("Furret has been praised " + numPraises + " times today.");
@@ -234,8 +237,10 @@ public class Main extends JFrame implements ActionListener {
         String _praising = "";
         String _praises = "";
         try {
-            _praising = getURL("http://furret-praiser-2000.glitch.me/praisers?id=" + this.userId);
-            _praises = getURL("http://furret-praiser-2000.glitch.me/praises?id=" + this.userId);
+            //_praising = getURL("http://furret-praiser-2000.glitch.me/praisers?id=" + this.userId);
+            //_praises = getURL("http://furret-praiser-2000.glitch.me/praises?id=" + this.userId);
+            _praising = getURL("http://pugduddly.home.kg:3000/praisers?id=" + this.userId);
+            _praises = getURL("http://pugduddly.home.kg:3000/praises?id=" + this.userId);
             numPraising = Integer.parseInt(_praising);
             numPraises = Integer.parseInt(_praises);
             
