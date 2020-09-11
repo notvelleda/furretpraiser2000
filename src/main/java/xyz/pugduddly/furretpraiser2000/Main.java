@@ -51,6 +51,7 @@ public class Main extends JFrame implements ActionListener {
     private String userId = "";
 
     private boolean hasRPC = false;
+    private boolean canPraise = false;
     
     public Main() {
         System.out.println("it's furret praising time!");
@@ -163,6 +164,27 @@ public class Main extends JFrame implements ActionListener {
         DiscordEventHandlers handlers = new DiscordEventHandlers();
         DiscordRichPresence presence = new DiscordRichPresence();
 
+        new Thread(() -> {
+            while (!Thread.currentThread().isInterrupted()) {
+                if (Main.this.canPraise) {
+                    Main.this.updatePraises();
+                }
+                
+                if (Main.this.hasRPC) {
+                    presence.partySize = numPraising;
+                    lib.Discord_UpdatePresence(presence);
+
+                    lib.Discord_RunCallbacks();
+                }
+
+                try {
+                    Thread.sleep(5000);
+                } catch (InterruptedException ie) {
+                    ie.printStackTrace();
+                }
+            }
+        }, "Praise Updater").start();
+
         handlers.ready = (user) -> {
             this.userId = user.userId;
             this.hasRPC = true;
@@ -183,25 +205,6 @@ public class Main extends JFrame implements ActionListener {
         /*presence.spectateSecret = "furretSpectate";
         presence.joinSecret = "furretJoin";*/
         lib.Discord_UpdatePresence(presence);
-
-        new Thread(() -> {
-            while (!Thread.currentThread().isInterrupted()) {
-                if (praise.isVisible()) {
-                    Main.this.updatePraises();
-                }
-                
-                if (Main.this.hasRPC) {
-                    presence.partySize = numPraising;
-                    lib.Discord_UpdatePresence(presence);
-
-                    lib.Discord_RunCallbacks();
-                }
-
-                try {
-                    Thread.sleep(5000);
-                } catch (InterruptedException ignored) {}
-            }
-        }, "RPC-Callback-Handler").start();
     }
     
     public void actionPerformed(ActionEvent event) {
@@ -252,6 +255,7 @@ public class Main extends JFrame implements ActionListener {
         }));
 
         this.praise.setVisible(true);
+        Main.this.canPraise = true;
         updatePraises();
     }
 
