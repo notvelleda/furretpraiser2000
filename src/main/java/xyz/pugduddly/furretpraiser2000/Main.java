@@ -43,6 +43,8 @@ public class Main extends JFrame implements ActionListener {
     private JLabel msgShadow;
     private JLabel msg2;
     private JLabel msg2Shadow;
+    private JButton praise;
+    private JButton skip;
 
     private int numPraising = 0;
     private int numPraises = 0;
@@ -99,35 +101,41 @@ public class Main extends JFrame implements ActionListener {
         makeLabelBig(text2, Font.ITALIC, 6);
         content.add(text2);
 
-        msg = new JLabel("Initializing RPC...");
-        msg.setBounds(5, 100, this.width - 10, 24);
-        msg.setForeground(white);
-        makeLabelBig(msg, Font.PLAIN, 6);
-        content.add(msg);
+        this.msg = new JLabel("Initializing RPC...");
+        this.msg.setBounds(5, 100, this.width - 10, 24);
+        this.msg.setForeground(white);
+        makeLabelBig(this.msg, Font.PLAIN, 6);
+        content.add(this.msg);
 
-        msgShadow = new JLabel("Initializing RPC...");
-        msgShadow.setBounds(6, 101, this.width - 10, 24);
-        msgShadow.setForeground(darkgray);
-        makeLabelBig(msgShadow, Font.PLAIN, 6);
-        content.add(msgShadow);
+        this.msgShadow = new JLabel("Initializing RPC...");
+        this.msgShadow.setBounds(6, 101, this.width - 10, 24);
+        this.msgShadow.setForeground(darkgray);
+        makeLabelBig(this.msgShadow, Font.PLAIN, 6);
+        content.add(this.msgShadow);
 
-        msg2 = new JLabel("");
-        msg2.setBounds(5, 124, this.width - 10, 24);
-        msg2.setForeground(white);
-        makeLabelBig(msg2, Font.PLAIN, 6);
-        content.add(msg2);
+        this.msg2 = new JLabel("");
+        this.msg2.setBounds(5, 124, this.width - 10, 24);
+        this.msg2.setForeground(white);
+        makeLabelBig(this.msg2, Font.PLAIN, 6);
+        content.add(this.msg2);
 
-        msg2Shadow = new JLabel("");
-        msg2Shadow.setBounds(6, 125, this.width - 10, 24);
-        msg2Shadow.setForeground(darkgray);
-        makeLabelBig(msg2Shadow, Font.PLAIN, 6);
-        content.add(msg2Shadow);
+        this.msg2Shadow = new JLabel("");
+        this.msg2Shadow.setBounds(6, 125, this.width - 10, 24);
+        this.msg2Shadow.setForeground(darkgray);
+        makeLabelBig(this.msg2Shadow, Font.PLAIN, 6);
+        content.add(this.msg2Shadow);
 
-        JButton praise = new JButton("Praise Furret");  
-        praise.setBounds(25, 175, 128, 32);  
-        praise.addActionListener(this);
-        praise.setVisible(false);
-        content.add(praise);
+        this.praise = new JButton("Praise Furret");
+        this.praise.setBounds(25, 175, 128, 32);
+        this.praise.addActionListener(this);
+        this.praise.setVisible(false);
+        content.add(this.praise);
+
+        this.skip = new JButton("Skip");
+        this.skip.setBounds(25, 150, 128, 32);
+        this.skip.addActionListener(this);
+        this.skip.setVisible(true);
+        content.add(this.skip);
 
         try {
             BufferedImage sitt = ImageIO.read(getClass().getResource("/sitt.png"));
@@ -155,33 +163,9 @@ public class Main extends JFrame implements ActionListener {
 
         handlers.ready = (user) -> {
             this.userId = user.userId;
-
-            //System.out.println("Got user " + user.username + "#" + user.discriminator);
-            msg.setText("Contacting server...");
-            msgShadow.setText("Contacting server...");
-
-            try {
-                //getURL("http://furret-praiser-2000.glitch.me/startpraising?id=" + user.userId);
-                getURL("http://pugduddly.home.kg:3000/startpraising?id=" + user.userId);
-            } catch (Exception e) {
-                e.printStackTrace();
-                msg.setText("Error connecting to server");
-                msgShadow.setText("Error connecting to server");
-            }
-
-            Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
-                public void run() {
-                    try {
-                        //getURL("http://furret-praiser-2000.glitch.me/stoppraising?id=" + user.userId);
-                        getURL("http://pugduddly.home.kg:3000/stoppraising?id=" + user.userId);
-                    } catch (Exception e) { 
-                        e.printStackTrace();
-                    }
-                }
-            }));
-
-            praise.setVisible(true);
-            updatePraises();
+            System.out.println("Got user " + user.username + "#" + user.discriminator);
+            
+            this.beginInit();
         };
 
         lib.Discord_Initialize("601483823490007042", handlers, true, "");
@@ -220,16 +204,49 @@ public class Main extends JFrame implements ActionListener {
                 //getURL("http://furret-praiser-2000.glitch.me/praise?id=" + this.userId);
                 getURL("http://pugduddly.home.kg:3000/praise?id=" + this.userId);
                 numPraises ++;
-                msg2.setText("Furret has been praised " + numPraises + " times today.");
-                msg2Shadow.setText("Furret has been praised " + numPraises + " times today.");
+                this.msg2.setText("Furret has been praised " + numPraises + " times today.");
+                this.msg2Shadow.setText("Furret has been praised " + numPraises + " times today.");
             } catch (Exception e) {
                 e.printStackTrace();
-                msg.setText("Error connecting to server");
-                msgShadow.setText("Error connecting to server");
-                msg2.setText("");
-                msg2Shadow.setText("");
+                this.msg.setText("Error connecting to server");
+                this.msgShadow.setText("Error connecting to server");
+                this.msg2.setText("");
+                this.msg2Shadow.setText("");
             }
+        } else if (event.getActionCommand() == "Skip") {
+            this.userId = "webappwebappwebapp";
+            this.beginInit();
         }
+    }
+
+    private void beginInit() {
+        this.skip.setVisible(false);
+        
+        msg.setText("Contacting server...");
+        msgShadow.setText("Contacting server...");
+
+        try {
+            //getURL("http://furret-praiser-2000.glitch.me/startpraising?id=" + user.userId);
+            getURL("http://pugduddly.home.kg:3000/startpraising?id=" + this.userId);
+        } catch (Exception e) {
+            e.printStackTrace();
+            this.msg.setText("Error connecting to server");
+            this.msgShadow.setText("Error connecting to server");
+        }
+
+        Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+            public void run() {
+                try {
+                    //getURL("http://furret-praiser-2000.glitch.me/stoppraising?id=" + user.userId);
+                    getURL("http://pugduddly.home.kg:3000/stoppraising?id=" + Main.this.userId);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }));
+
+        this.praise.setVisible(true);
+        updatePraises();
     }
 
     private void updatePraises() {
@@ -241,34 +258,34 @@ public class Main extends JFrame implements ActionListener {
             //_praises = getURL("http://furret-praiser-2000.glitch.me/praises?id=" + this.userId);
             _praising = getURL("http://pugduddly.home.kg:3000/praisers?id=" + this.userId);
             _praises = getURL("http://pugduddly.home.kg:3000/praises?id=" + this.userId);
-            numPraising = Integer.parseInt(_praising);
-            numPraises = Integer.parseInt(_praises);
+            this.numPraising = Integer.parseInt(_praising);
+            this.numPraises = Integer.parseInt(_praises);
             
             if (numPraising == 1) {
-                msg.setText(numPraising + " person is praising Furret.");
-                msgShadow.setText(numPraising + " person is praising Furret.");
+                this.msg.setText(numPraising + " person is praising Furret.");
+                this.msgShadow.setText(numPraising + " person is praising Furret.");
             } else {
-                msg.setText(numPraising + " people are praising Furret.");
-                msgShadow.setText(numPraising + " people are praising Furret.");
+                this.msg.setText(numPraising + " people are praising Furret.");
+                this.msgShadow.setText(numPraising + " people are praising Furret.");
             }
 
-            msg2.setText("Furret has been praised " + numPraises + " times today.");
-            msg2Shadow.setText("Furret has been praised " + numPraises + " times today.");
+            this.msg2.setText("Furret has been praised " + numPraises + " times today.");
+            this.msg2Shadow.setText("Furret has been praised " + numPraises + " times today.");
         } catch (NumberFormatException e) {
             e.printStackTrace();
             if (_praising.equals(_praises)) {
                 _praises = "";
             }
-            msg.setText(_praising);
-            msgShadow.setText(_praising);
-            msg2.setText(_praises);
-            msg2Shadow.setText(_praises);
+            this.msg.setText(_praising);
+            this.msgShadow.setText(_praising);
+            this.msg2.setText(_praises);
+            this.msg2Shadow.setText(_praises);
         } catch (Exception e) {
             e.printStackTrace();
-            msg.setText("Error connecting to server");
-            msgShadow.setText("Error connecting to server");
-            msg2.setText("");
-            msg2Shadow.setText("");
+            this.msg.setText("Error connecting to server");
+            this.msgShadow.setText("Error connecting to server");
+            this.msg2.setText("");
+            this.msg2Shadow.setText("");
         }
     }
 
