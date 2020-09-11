@@ -49,6 +49,8 @@ public class Main extends JFrame implements ActionListener {
     private int numPraising = 0;
     private int numPraises = 0;
     private String userId = "";
+
+    private boolean hasRPC = false;
     
     public Main() {
         System.out.println("it's furret praising time!");
@@ -163,6 +165,7 @@ public class Main extends JFrame implements ActionListener {
 
         handlers.ready = (user) -> {
             this.userId = user.userId;
+            this.hasRPC = true;
             System.out.println("Got user " + user.username + "#" + user.discriminator);
             
             this.beginInit();
@@ -184,13 +187,16 @@ public class Main extends JFrame implements ActionListener {
         new Thread(() -> {
             while (!Thread.currentThread().isInterrupted()) {
                 if (praise.isVisible()) {
-                    updatePraises();
+                    Main.this.updatePraises();
                 }
                 
-                presence.partySize = numPraising;
-                lib.Discord_UpdatePresence(presence);
+                if (Main.this.hasRPC) {
+                    presence.partySize = numPraising;
+                    lib.Discord_UpdatePresence(presence);
 
-                lib.Discord_RunCallbacks();
+                    lib.Discord_RunCallbacks();
+                }
+
                 try {
                     Thread.sleep(5000);
                 } catch (InterruptedException ignored) {}
@@ -214,7 +220,7 @@ public class Main extends JFrame implements ActionListener {
                 this.msg2Shadow.setText("");
             }
         } else if (event.getActionCommand() == "Skip") {
-            this.userId = "webappwebappwebapp";
+            this.userId = "000000000000000000";
             this.beginInit();
         }
     }
@@ -260,6 +266,8 @@ public class Main extends JFrame implements ActionListener {
             _praises = getURL("http://pugduddly.home.kg:3000/praises?id=" + this.userId);
             this.numPraising = Integer.parseInt(_praising);
             this.numPraises = Integer.parseInt(_praises);
+
+            if (!this.hasRPC) this.numPraising ++;
             
             if (numPraising == 1) {
                 this.msg.setText(numPraising + " person is praising Furret.");
